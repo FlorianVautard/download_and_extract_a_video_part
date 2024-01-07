@@ -49,20 +49,30 @@ while [[ -z "$video_url" ]]; do
     read -p "Please enter the video URL: " video_url
 done
 
-# Ask for the start time of the portion to keep if not provided as a parameter
-while [[ -z "$start_time" ]]; do
-    read -p "At what time does the portion to keep start (in the format HH:MM:SS)? " start_time
-done
-
-# Ask for the duration of the video to keep if not provided as a parameter
-while [[ -z "$duration" ]]; do
-    read -p "How long does the video to keep last (in the format HH:MM:SS)? " duration
-done
-
 # Ask for the name of the extracted file if not provided as a parameter
 while [[ -z "$output" ]]; do
     read -p "What is the name of the extracted file? " output
 done
+
+# Ask for the start time of the portion to keep if not provided as a parameter
+read -p "At what time does the portion to keep start (in the format HH:MM:SS)? " start_time
+
+# Check if start_time is empty, if yes, download the entire video
+if [[ -z "$start_time" ]]; then
+    # Set the backup path to /tmp
+    tmp_directory="/tmp"
+
+    # Download the video with yt-dlp and save it in /tmp
+    yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' "$video_url" --output $output.mp4
+
+    echo "The entire video has been successfully downloaded. The output file is $output.mp4."
+    exit 0
+else
+	# If start_time is provided, ask for the duration
+	while [[ -z "$duration" ]]; do
+	    read -p "How long does the video to keep last (in the format HH:MM:SS)? " duration
+	done
+fi
 
 # Set the backup path to /tmp
 tmp_directory="/tmp"
@@ -80,4 +90,3 @@ mv "$tmp_directory/$output.mp4" .
 rm "$tmp_directory/video.mp4"
 
 echo "The video has been successfully cut. The output file is '$output.mp4'."
-
