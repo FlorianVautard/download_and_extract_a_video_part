@@ -48,10 +48,12 @@ fi
 while [[ -z "$video_url" ]]; do
     read -p "Please enter the video URL: " video_url
 done
+# Get the title of the video using yt-dlp
+video_title=$(yt-dlp --get-title "$video_url")
 
 # Ask for the name of the extracted file if not provided as a parameter
 while [[ -z "$output" ]]; do
-    read -p "What is the name of the extracted file? " output
+    read -p "What is the name of the video (current title is '$video_title')? " output
 done
 
 # Ask for the start time of the portion to keep if not provided as a parameter
