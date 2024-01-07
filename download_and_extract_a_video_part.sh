@@ -1,5 +1,37 @@
 #!/bin/bash
 
+# Function to print usage information
+usage() {
+    echo "Usage: $0 [-u <video_url>] [-s <start_time>] [-t <duration>] [-o <output_file>]"
+    exit 1
+}
+
+# Parse command line options
+while getopts ":u:s:t:o:" opt; do
+    case $opt in
+        u)
+            video_url=$OPTARG
+            ;;
+        s)
+            start_time=$OPTARG
+            ;;
+        t)
+            duration=$OPTARG
+            ;;
+        o)
+            output=$OPTARG
+            ;;
+        \?)
+            echo "Invalid option: -$OPTARG"
+            usage
+            ;;
+        :)
+            echo "Option -$OPTARG requires an argument."
+            usage
+            ;;
+    esac
+done
+
 # Check for the presence of yt-dlp
 if ! command -v yt-dlp &> /dev/null; then
     echo "Error: yt-dlp is not installed. Please install it with 'pip install yt-dlp'."
@@ -12,22 +44,22 @@ if ! command -v ffmpeg &> /dev/null; then
     exit 1
 fi
 
-# Ask for the URL of the video to be kept
+# Ask for the URL of the video to be kept if not provided as a parameter
 while [[ -z "$video_url" ]]; do
     read -p "Please enter the video URL: " video_url
 done
 
-# Ask for the start time of the portion to keep
+# Ask for the start time of the portion to keep if not provided as a parameter
 while [[ -z "$start_time" ]]; do
     read -p "At what time does the portion to keep start (in the format HH:MM:SS)? " start_time
 done
 
-# Ask for the duration of the video to keep
+# Ask for the duration of the video to keep if not provided as a parameter
 while [[ -z "$duration" ]]; do
     read -p "How long does the video to keep last (in the format HH:MM:SS)? " duration
 done
 
-# Ask for the name of the extracted file
+# Ask for the name of the extracted file if not provided as a parameter
 while [[ -z "$output" ]]; do
     read -p "What is the name of the extracted file? " output
 done
@@ -48,3 +80,4 @@ mv "$tmp_directory/$output.mp4" .
 rm "$tmp_directory/video.mp4"
 
 echo "The video has been successfully cut. The output file is '$output.mp4'."
+
