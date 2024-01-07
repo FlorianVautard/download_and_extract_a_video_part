@@ -63,7 +63,7 @@ if [[ -z "$start_time" ]]; then
     tmp_directory="/tmp"
 
     # Download the video with yt-dlp and save it in /tmp
-    yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' "$video_url" --output $output.mp4
+    yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' "$video_url" --output "$output.mp4"
 
     echo "The entire video has been successfully downloaded. The output file is $output.mp4."
     exit 0
